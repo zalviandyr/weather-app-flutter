@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:desktop_window/desktop_window.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
@@ -5,14 +9,22 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app/blocs/blocs.dart';
 import 'package:weather_app/ui/screens/screens.dart';
 
-void main() {
+void main() async {
+  if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+    WidgetsFlutterBinding.ensureInitialized();
+    await DesktopWindow.setMinWindowSize(Size(400, 600));
+  }
+
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(const Color(0xFF070928));
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+      FlutterStatusbarcolor.setStatusBarColor(const Color(0xFF070928));
+    }
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<RegionBloc>(create: (_) => RegionBloc()),

@@ -13,7 +13,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final Size screenSize = MediaQuery.of(context).size;
   late ForecastBloc _forecastBloc;
 
   @override
@@ -45,17 +44,45 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           builder: (context, state) {
             if (state is ForecastFetchCurrentSuccess) {
-              return ListView(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 15.0),
-                children: [
-                  ..._buildHeader(state.currentForecast),
-                  const SizedBox(height: 5.0),
-                  _buildDetailForecast(state.currentForecast),
-                  const SizedBox(height: 25.0),
-                  ..._buildListForecast(state.currentForecast),
-                ],
-              );
+              if (MediaQuery.of(context).size.width <= 720) {
+                return ListView(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20.0, horizontal: 15.0),
+                  children: [
+                    ..._buildHeader(state.currentForecast),
+                    const SizedBox(height: 5.0),
+                    _buildDetailForecast(state.currentForecast),
+                    const SizedBox(height: 25.0),
+                    ..._buildListForecast(state.currentForecast),
+                  ],
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20.0, horizontal: 15.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        child: Column(
+                          children: [
+                            ..._buildHeader(state.currentForecast),
+                            const SizedBox(height: 5.0),
+                            _buildDetailForecast(state.currentForecast),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView(
+                          children: [
+                            ..._buildListForecast(state.currentForecast),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
             }
 
             return Center(child: CircularProgressIndicator());
@@ -102,7 +129,9 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Image.asset(
             currentForecast.forecast.assetCuaca,
-            width: screenSize.width * 0.5,
+            width: (MediaQuery.of(context).size.width <= 720)
+                ? MediaQuery.of(context).size.width * 0.5
+                : MediaQuery.of(context).size.width * 0.25,
             fit: BoxFit.fill,
           ),
         ],

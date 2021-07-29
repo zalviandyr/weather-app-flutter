@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  desktop_window: ^0.4.0
   equatable: ^2.0.3
   flutter_bloc: ^7.0.1
   flutter_statusbarcolor_ns: ^0.3.0-nullsafety
