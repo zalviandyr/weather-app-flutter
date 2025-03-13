@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               currentForecast.currentRegion.kota,
-              style: Theme.of(context).textTheme.headline1,
+              style: Theme.of(context).textTheme.displayLarge,
             ),
             const SizedBox(width: 10.0),
             const Icon(Icons.expand_more, size: 35.0),
@@ -114,13 +114,13 @@ class _HomeScreenState extends State<HomeScreen> {
       const SizedBox(height: 15.0),
       Text(
         Helper.toDateFormat(currentForecast.forecast.jamCuaca),
-        style: Theme.of(context).textTheme.bodyText2,
+        style: Theme.of(context).textTheme.bodyMedium,
         textAlign: TextAlign.center,
       ),
       const SizedBox(height: 5.0),
       Text(
         currentForecast.forecast.cuaca,
-        style: Theme.of(context).textTheme.bodyText2,
+        style: Theme.of(context).textTheme.bodyMedium,
         textAlign: TextAlign.center,
       ),
       const SizedBox(height: 15.0),
@@ -147,12 +147,12 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               'Temp C',
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 5.0),
             Text(
               '${currentForecast.forecast.tempC}°',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
           ],
         ),
@@ -160,12 +160,12 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               'Temp F',
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 5.0),
             Text(
               '${currentForecast.forecast.tempF}°',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
           ],
         ),
@@ -173,12 +173,12 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               'Humidity',
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 5.0),
             Text(
               '${currentForecast.forecast.humidity}%',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
           ],
         ),
@@ -192,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
         alignment: Alignment.topLeft,
         child: Text(
           'Hari ini',
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
       const SizedBox(height: 10.0),
@@ -210,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
         alignment: Alignment.topLeft,
         child: Text(
           'Besok',
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
       const SizedBox(height: 10.0),

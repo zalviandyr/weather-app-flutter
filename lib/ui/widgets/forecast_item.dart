@@ -13,7 +13,7 @@ class ForecastItem extends StatelessWidget {
       height: 100.0,
       margin: const EdgeInsets.symmetric(vertical: 5.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).accentColor.withOpacity(0.15),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.15),
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: Row(
@@ -28,12 +28,12 @@ class ForecastItem extends StatelessWidget {
               children: [
                 Text(
                   Helper.toTimeFormat(forecast.jamCuaca),
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 10.0),
                 Text(
                   Helper.toDateFormat(forecast.jamCuaca),
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
             ),
@@ -42,7 +42,7 @@ class ForecastItem extends StatelessWidget {
           Text(
             '${forecast.tempC}°C',
             style:
-                Theme.of(context).textTheme.headline1!.copyWith(fontSize: 50.0),
+                Theme.of(context).textTheme.displayLarge!.copyWith(fontSize: 50.0),
           ),
           const Spacer(),
           Image.asset(forecast.assetCuaca),

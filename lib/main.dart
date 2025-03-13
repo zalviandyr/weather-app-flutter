@@ -10,6 +10,9 @@ import 'package:weather_app/blocs/blocs.dart';
 import 'package:weather_app/ui/screens/screens.dart';
 
 void main() async {
+  // bloc observer
+  Bloc.observer = AppBlocObserver();
+
   if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
     WidgetsFlutterBinding.ensureInitialized();
     await DesktopWindow.setMinWindowSize(Size(400, 600));
@@ -34,34 +37,36 @@ class MyApp extends StatelessWidget {
         title: 'Weather App',
         theme: ThemeData(
           primaryColor: const Color(0xFF070928),
-          accentColor: const Color(0xFF1B86E6),
           scaffoldBackgroundColor: const Color(0xFF070928),
-          brightness: Brightness.dark,
           textTheme: TextTheme(
-            headline1: GoogleFonts.getFont(
+            displayLarge: GoogleFonts.getFont(
               'Lato',
               fontSize: 25,
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
-            headline2: GoogleFonts.getFont(
+            displayMedium: GoogleFonts.getFont(
               'Lato',
               fontSize: 25,
               color: Colors.grey,
               fontWeight: FontWeight.bold,
             ),
-            bodyText1: GoogleFonts.getFont(
+            bodyLarge: GoogleFonts.getFont(
               'Lato',
               fontSize: 15,
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
-            bodyText2: GoogleFonts.getFont(
+            bodyMedium: GoogleFonts.getFont(
               'Lato',
               fontSize: 15,
               color: Colors.grey,
               fontWeight: FontWeight.bold,
             ),
+          ),
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            secondary: const Color(0xFF1B86E6),
+            brightness: Brightness.dark,
           ),
         ),
         home: HomeScreen(),

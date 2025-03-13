@@ -66,7 +66,7 @@ class _RegionScreenState extends State<RegionScreen> {
           SliverAppBar(
             title: Text(
               'Wilayah',
-              style: Theme.of(context).textTheme.headline1,
+              style: Theme.of(context).textTheme.displayLarge,
             ),
             floating: true,
             centerTitle: true,
@@ -77,7 +77,7 @@ class _RegionScreenState extends State<RegionScreen> {
                 margin:
                     const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 5.0),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).accentColor.withOpacity(0.15),
+                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(5.0),
                 ),
                 child: TextFormField(
@@ -92,7 +92,7 @@ class _RegionScreenState extends State<RegionScreen> {
                       child: Icon(Icons.close),
                     ),
                   ),
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                   onFieldSubmitted: _searchSubmit,
                 ),
               ),

@@ -4,41 +4,41 @@ import 'package:weather_app/models/models.dart';
 import 'package:weather_app/services/service.dart';
 
 class RegionBloc extends Bloc<RegionEvent, RegionState> {
-  RegionBloc() : super(RegionUninitialized());
+  RegionBloc() : super(RegionUninitialized()) {
+    on<RegionFetch>(_onRegionFetch);
+    on<RegionSearch>(_onRegionSearch);
+  }
 
-  @override
-  Stream<RegionState> mapEventToState(RegionEvent event) async* {
+  Future<void> _onRegionFetch(
+      RegionFetch event, Emitter<RegionState> emit) async {
     try {
-      if (event is RegionFetch) {
-        yield RegionLoading();
+      emit(RegionLoading());
+      final regions = await Service.fetchRegion();
+      emit(RegionFetchSuccess(regions: regions));
+    } catch (e, trace) {
+      onError(e, trace);
 
-        List<Region> regions = await Service.fetchRegion();
+      emit(RegionError());
+    }
+  }
 
-        yield RegionFetchSuccess(regions: regions);
-      }
+  Future<void> _onRegionSearch(
+      RegionSearch event, Emitter<RegionState> emit) async {
+    try {
+      emit(RegionLoading());
 
-      if (event is RegionSearch) {
-        yield RegionLoading();
+      final keyword = event.keyword.toLowerCase();
+      final regions = (await Service.fetchRegion()).where((region) {
+        return region.kota.toLowerCase().contains(keyword) ||
+            region.kecamatan.toLowerCase().contains(keyword) ||
+            region.provinsi.toLowerCase().contains(keyword);
+      }).toList();
 
-        String keyword = event.keyword.toLowerCase();
-        List<Region> regions = await Service.fetchRegion();
+      emit(RegionFetchSuccess(regions: regions));
+    } catch (e, trace) {
+      onError(e, trace);
 
-        regions = regions.where((element) {
-          if (element.kota.toLowerCase().contains(keyword) ||
-              element.kecamatan.toLowerCase().contains(keyword) ||
-              element.provinsi.toLowerCase().contains(keyword)) {
-            return true;
-          } else {
-            return false;
-          }
-        }).toList();
-
-        yield RegionFetchSuccess(regions: regions);
-      }
-    } catch (e) {
-      print(e);
-
-      yield RegionError();
+      emit(RegionError());
     }
   }
 }

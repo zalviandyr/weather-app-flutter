@@ -5,63 +5,62 @@ import 'package:weather_app/models/models.dart';
 import 'package:weather_app/services/service.dart';
 
 class ForecastBloc extends Bloc<ForecastEvent, ForecastState> {
-  ForecastBloc() : super(ForecastUninitialized());
+  ForecastBloc() : super(ForecastUninitialized()) {
+    on<ForecastSetCurrentRegion>(_onSetCurrentRegion);
+    on<ForecastFetchCurrent>(_onFetchCurrentForecast);
+  }
 
-  @override
-  Stream<ForecastState> mapEventToState(ForecastEvent event) async* {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+  Future<void> _onSetCurrentRegion(
+      ForecastSetCurrentRegion event, Emitter<ForecastState> emit) async {
+    final preferences = await SharedPreferences.getInstance();
 
+    await _savePreference(preferences, event.region);
+    add(ForecastFetchCurrent());
+  }
+
+  Future<void> _onFetchCurrentForecast(
+      ForecastFetchCurrent event, Emitter<ForecastState> emit) async {
+    final preferences = await SharedPreferences.getInstance();
     try {
-      if (event is ForecastSetCurrentRegion) {
-        await _savePreference(preferences, event.region);
+      emit(ForecastLoading());
 
-        this.add(ForecastFetchCurrent());
-      }
+      final currentRegion = _getPreference(preferences);
+      final forecasts = await Service.fetchForecast(currentRegion.id);
 
-      if (event is ForecastFetchCurrent) {
-        yield ForecastLoading();
+      // Mendapatkan ramalan cuaca saat ini
+      final now = DateTime.now();
+      final filterForecasts =
+          forecasts.where((f) => f.jamCuaca.isBefore(now)).toList();
+      final currentForecast =
+          filterForecasts.isNotEmpty ? filterForecasts.last : null;
 
-        Region currentRegion = _getPreference(preferences);
-        List<Forecast> forecasts =
-            await Service.fetchForecast(currentRegion.id);
+      // Pisahkan forecast berdasarkan hari
+      final todayForecasts =
+          forecasts.where((f) => f.jamCuaca.day == now.day).toList();
+      final tomorrowForecasts =
+          forecasts.where((f) => f.jamCuaca.day == now.day + 1).toList();
 
-        // get current forecast
-        DateTime now = DateTime.now();
-        List<Forecast> filterForecasts = forecasts
-            .where((element) => element.jamCuaca.compareTo(now) == -1)
-            .toList();
-        Forecast currentForecast = filterForecasts.last;
+      final current = CurrentForecast(
+        currentRegion: currentRegion,
+        forecast: currentForecast!,
+        todayForecasts: todayForecasts,
+        tomorrowForecasts: tomorrowForecasts,
+      );
 
-        // get today forecast
-        List<Forecast> todayForecasts = forecasts
-            .where((element) => element.jamCuaca.day.compareTo(now.day) == 0)
-            .toList();
+      emit(ForecastFetchCurrentSuccess(currentForecast: current));
+    } catch (e, trace) {
+      onError(e, trace);
 
-        // get tomorrow forecast
-        List<Forecast> tomorrowForecasts = forecasts
-            .where((element) => element.jamCuaca.day.compareTo(now.day) == 1)
-            .toList();
+      emit(ForecastError());
 
-        CurrentForecast current = CurrentForecast(
-          currentRegion: currentRegion,
-          forecast: currentForecast,
-          todayForecasts: todayForecasts,
-          tomorrowForecasts: tomorrowForecasts,
-        );
-
-        yield ForecastFetchCurrentSuccess(currentForecast: current);
-      }
-    } catch (e) {
-      print(e);
-      yield ForecastError();
-
-      // if error, fetch default region
-      preferences.clear();
-      this.add(ForecastFetchCurrent());
+      // Jika terjadi error, reset preferensi dan coba fetch ulang
+      await preferences.clear();
+      add(ForecastFetchCurrent());
     }
   }
 
-  _savePreference(SharedPreferences preferences, Region region) async {
+  Future<void> _savePreference(
+      SharedPreferences preferences, Region region) async {
     await preferences.setString('regionId', region.id);
     await preferences.setString('regionKecamatan', region.kecamatan);
     await preferences.setString('regionKota', region.kota);
@@ -69,10 +68,9 @@ class ForecastBloc extends Bloc<ForecastEvent, ForecastState> {
   }
 
   Region _getPreference(SharedPreferences preferences) {
-    // Region default dki jakarta
     return Region(
       id: preferences.getString('regionId') ?? '501195',
-      provinsi: preferences.getString('regionProvinsi') ?? 'DKIJakarta',
+      provinsi: preferences.getString('regionProvinsi') ?? 'DKI Jakarta',
       kota: preferences.getString('regionKota') ?? 'Kota Jakarta Pusat',
       kecamatan: preferences.getString('regionKecamatan') ?? 'Jakarta Pusat',
     );

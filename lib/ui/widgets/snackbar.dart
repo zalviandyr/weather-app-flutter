@@ -5,7 +5,7 @@ void showSnackbar(BuildContext context) {
     SnackBar(
       content: Text(
         'Oops.. ada yang salah nih',
-        style: Theme.of(context).textTheme.bodyText1,
+        style: Theme.of(context).textTheme.bodyLarge,
       ),
       backgroundColor: Colors.red,
       behavior: SnackBarBehavior.floating,
